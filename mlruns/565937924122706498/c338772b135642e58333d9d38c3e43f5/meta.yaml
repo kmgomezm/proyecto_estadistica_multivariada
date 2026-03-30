@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/565937924122706498/c338772b135642e58333d9d38c3e43f5/artifacts
+end_time: 1774825186117
+entry_point_name: ''
+experiment_id: '565937924122706498'
+lifecycle_stage: active
+run_id: c338772b135642e58333d9d38c3e43f5
+run_name: decision_tree_tuned_C
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774825185987
+status: 3
+tags: []
+user_id: andyh

@@ -1,0 +1,11 @@
+{
+  "target_col": "SalePrice",
+  "best_model": "linear_regression",
+  "best_scenario": "C_tuned",
+  "baseline_rmse": 87619.03450611533,
+  "best_rmse": 29822.052151480682,
+  "rmse_reduction_vs_baseline_pct": 65.9639571246368,
+  "meets_50pct_goal": true,
+  "raw_path": "..\\data\\raw\\train.csv",
+  "clean_path": "..\\data\\processed\\clean_train.csv"
+}

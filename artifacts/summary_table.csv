@@ -1,0 +1,2 @@
+best_model,best_scenario,best_rmse,best_mape,rmse_reduction_vs_baseline_pct,meets_50pct_goal
+linear_regression,C_tuned,29822.052151480682,0.11916303621728287,65.9639571246368,True

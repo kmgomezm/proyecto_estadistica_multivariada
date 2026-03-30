@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/565937924122706498/956b35689c0146028700160523555bde/artifacts
+end_time: 1774829527956
+entry_point_name: ''
+experiment_id: '565937924122706498'
+lifecycle_stage: active
+run_id: 956b35689c0146028700160523555bde
+run_name: lightgbm_clean_B
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774829527853
+status: 3
+tags: []
+user_id: andyh

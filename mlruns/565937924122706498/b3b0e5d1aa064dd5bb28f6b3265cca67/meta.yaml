@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/565937924122706498/b3b0e5d1aa064dd5bb28f6b3265cca67/artifacts
+end_time: 1774824069055
+entry_point_name: ''
+experiment_id: '565937924122706498'
+lifecycle_stage: active
+run_id: b3b0e5d1aa064dd5bb28f6b3265cca67
+run_name: linear_regression_clean_B
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774824068966
+status: 3
+tags: []
+user_id: andyh

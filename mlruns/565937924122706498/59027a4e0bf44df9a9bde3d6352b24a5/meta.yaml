@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/565937924122706498/59027a4e0bf44df9a9bde3d6352b24a5/artifacts
+end_time: 1774823904179
+entry_point_name: ''
+experiment_id: '565937924122706498'
+lifecycle_stage: active
+run_id: 59027a4e0bf44df9a9bde3d6352b24a5
+run_name: model_selection_summary
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774823904032
+status: 3
+tags: []
+user_id: andyh

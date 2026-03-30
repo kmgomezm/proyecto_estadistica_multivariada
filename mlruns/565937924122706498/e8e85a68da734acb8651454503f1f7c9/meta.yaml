@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/565937924122706498/e8e85a68da734acb8651454503f1f7c9/artifacts
+end_time: 1774831082268
+entry_point_name: ''
+experiment_id: '565937924122706498'
+lifecycle_stage: active
+run_id: e8e85a68da734acb8651454503f1f7c9
+run_name: xgboost_clean_B
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774831082149
+status: 3
+tags: []
+user_id: andyh
