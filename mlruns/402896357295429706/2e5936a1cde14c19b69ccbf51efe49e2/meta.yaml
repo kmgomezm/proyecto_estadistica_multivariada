@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/402896357295429706/2e5936a1cde14c19b69ccbf51efe49e2/artifacts
+end_time: 1774880687888
+entry_point_name: ''
+experiment_id: '402896357295429706'
+lifecycle_stage: active
+run_id: 2e5936a1cde14c19b69ccbf51efe49e2
+run_name: baseline_mean_raw
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774880687778
+status: 3
+tags: []
+user_id: andyh

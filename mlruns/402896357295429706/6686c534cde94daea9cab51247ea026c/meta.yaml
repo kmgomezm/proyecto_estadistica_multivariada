@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/IngenieriaMatematica/Semestre8/EstadisticaMultivariada/housepredict_github/mlruns/402896357295429706/6686c534cde94daea9cab51247ea026c/artifacts
+end_time: 1774881300925
+entry_point_name: ''
+experiment_id: '402896357295429706'
+lifecycle_stage: active
+run_id: 6686c534cde94daea9cab51247ea026c
+run_name: catboost_raw_A
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774881300841
+status: 3
+tags: []
+user_id: andyh
