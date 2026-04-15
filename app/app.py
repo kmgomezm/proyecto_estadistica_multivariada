@@ -2,6 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import os
+import sys
+
+# =========================
+# PATH FIX (import src en deploy)
+# =========================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
+sys.path.append(PROJECT_ROOT)
 
 # =========================
 # CONFIG
@@ -9,28 +18,39 @@ import joblib
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
 st.title("🏠 Predicción de Precio de Vivienda")
+st.caption("Comparación de modelos + predicción con el mejor modelo")
 
 # =========================
 # LOAD MODEL
 # =========================
 @st.cache_resource
 def load_model():
-    return joblib.load("artifacts/final_model.pkl")
+    return joblib.load(os.path.join(PROJECT_ROOT, "artifacts", "final_model.pkl"))
 
 model = load_model()
+
+# =========================
+# LOAD RESULTS (RMSE)
+# =========================
+@st.cache_data
+def load_results():
+    path = os.path.join(PROJECT_ROOT, "data", "results", "test_results.csv")
+    return pd.read_csv(path)
+
+results_df = load_results().sort_values("rmse_test").reset_index(drop=True)
 
 # =========================
 # LOAD TRAIN COLUMNS
 # =========================
 @st.cache_data
 def load_columns():
-    df = pd.read_csv("data/clean/X_train.csv")
-    return df.columns.tolist()
+    path = os.path.join(PROJECT_ROOT, "data", "clean", "X_train.csv")
+    return pd.read_csv(path).columns.tolist()
 
 all_columns = load_columns()
 
 # =========================
-# INPUTS
+# SIDEBAR INPUTS
 # =========================
 st.sidebar.header("Características principales")
 
@@ -57,38 +77,63 @@ user_input = {
 }
 
 # =========================
-# CONSTRUIR INPUT COMPLETO
+# BUILD FULL INPUT
 # =========================
 input_df = pd.DataFrame([user_input])
 
-# completar columnas faltantes
 for col in all_columns:
     if col not in input_df.columns:
         input_df[col] = 0
 
-# ordenar columnas
 input_df = input_df[all_columns]
 
-st.subheader("📋 Input final")
-st.write(input_df)
+# =========================
+# PREDICTION
+# =========================
+st.subheader("🔮 Predicción")
 
-# =========================
-# PREDICCIÓN
-# =========================
 if st.button("Predecir precio"):
-    
     try:
         pred_log = model.predict(input_df)
         pred = np.expm1(pred_log)
-        
+
         st.metric("💰 Precio estimado", f"${pred[0]:,.0f}")
-    
     except Exception as e:
-        st.error("Error en predicción")
+        st.error("Error en la predicción")
         st.write(e)
+
+# =========================
+# MODEL COMPARISON
+# =========================
+st.markdown("---")
+st.subheader("📊 RMSE en conjunto de prueba")
+
+st.dataframe(results_df)
+
+# =========================
+# BEST MODEL
+# =========================
+best_model = results_df.iloc[0]
+
+st.success(f"""
+🏆 Mejor modelo: {best_model['model']}
+
+RMSE: {best_model['rmse_test']:.0f}
+MAE: {best_model['mae_test']:.0f}
+R²: {best_model['r2_test']:.3f}
+""")
+
+# =========================
+# PLOT
+# =========================
+st.subheader("📉 Comparación RMSE")
+
+st.bar_chart(
+    results_df.set_index("model")["rmse_test"]
+)
 
 # =========================
 # FOOTER
 # =========================
 st.markdown("---")
-st.write("Proyecto de Regresión - Kaggle House Prices")
+st.write("Proyecto de Regresión - House Prices (Kaggle)")
