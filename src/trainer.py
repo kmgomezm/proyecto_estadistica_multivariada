@@ -147,6 +147,7 @@ def run_training(
             best_model, metrics = train_cv(
                 model_name, model, pipeline_builder, X, y, cv
             )
+            best_model.fit(X, y)
             best_params = {}
         
         # LOG MLFLOW
