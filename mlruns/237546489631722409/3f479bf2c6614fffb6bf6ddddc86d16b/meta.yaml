@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/237546489631722409/3f479bf2c6614fffb6bf6ddddc86d16b/artifacts
+end_time: 1776071716224
+entry_point_name: ''
+experiment_id: '237546489631722409'
+lifecycle_stage: active
+run_id: 3f479bf2c6614fffb6bf6ddddc86d16b
+run_name: baseline_mean_processed
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776071709194
+status: 3
+tags: []
+user_id: karen
