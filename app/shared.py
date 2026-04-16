@@ -7,6 +7,10 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DESCRIPTION_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "data_description.txt")
 MAX_BATCH_ROWS = 1000
 
+# Streamlit Cloud can execute from /app, so ensure the repo root is importable
+# before unpickling models that reference modules like `src.*`.
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 @st.cache_resource
 def load_model():
