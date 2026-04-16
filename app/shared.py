@@ -2,6 +2,7 @@ import os
 import joblib
 import pandas as pd
 import streamlit as st
+import sys
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DESCRIPTION_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "data_description.txt")
