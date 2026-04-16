@@ -20,6 +20,8 @@ def load_model():
     
     return joblib.load(path)
 
+
+
 # =========================
 # RESULTS
 # =========================
