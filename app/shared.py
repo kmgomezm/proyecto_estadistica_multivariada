@@ -81,7 +81,7 @@ def build_feature_metadata():
 
     metadata = {}
     for col in x_train.columns:
-        if x_train[col].dtype == "object":
+        if not pd.api.types.is_numeric_dtype(x_train[col]):
             train_options = sorted(x_train[col].dropna().astype(str).unique().tolist())
             options = train_options if train_options else desc_options.get(col, [])
             default_value = options[0] if options else ""
@@ -92,9 +92,10 @@ def build_feature_metadata():
                 "default": default_value,
             }
         else:
-            col_min = float(x_train[col].min())
-            col_max = float(x_train[col].max())
-            median = float(x_train[col].median())
+            numeric_col = pd.to_numeric(x_train[col], errors="coerce")
+            col_min = float(numeric_col.min())
+            col_max = float(numeric_col.max())
+            median = float(numeric_col.median())
             metadata[col] = {
                 "type": "numeric",
                 "description": descriptions.get(col, "Sin descripción en data_description"),
