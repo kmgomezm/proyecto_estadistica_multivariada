@@ -1,4 +1,5 @@
 import os
+import sys
 import joblib
 import pandas as pd
 import streamlit as st
@@ -8,13 +9,29 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DESCRIPTION_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "data_description.txt")
 MAX_BATCH_ROWS = 1000
 
-# Streamlit Cloud can execute from /app, so ensure the repo root is importable
-# before unpickling models that reference modules like `src.*`.
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+def ensure_src_package_available():
+    """Make sure modules under src.* are importable before unpickling models."""
+    candidates = [
+        PROJECT_ROOT,
+        os.getcwd(),
+        os.path.dirname(os.getcwd()),
+    ]
+
+    for base_path in candidates:
+        if not base_path:
+            continue
+
+        src_path = os.path.join(base_path, "src")
+        if os.path.isdir(src_path) and base_path not in sys.path:
+            sys.path.insert(0, base_path)
+
+    # Force import now so joblib/pickle can resolve src.* references.
+    import src.preprocessing  # noqa: F401
+
 
 @st.cache_resource
 def load_model():
+    ensure_src_package_available()
     return joblib.load(os.path.join(PROJECT_ROOT, "artifacts", "final_model.pkl"))
 
 
