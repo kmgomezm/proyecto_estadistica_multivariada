@@ -1,4 +1,5 @@
 import os
+import sys
 import joblib
 import pandas as pd
 import streamlit as st
@@ -7,9 +8,29 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DESCRIPTION_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "data_description.txt")
 MAX_BATCH_ROWS = 1000
 
+def ensure_src_package_available():
+    """Make sure modules under src.* are importable before unpickling models."""
+    candidates = [
+        PROJECT_ROOT,
+        os.getcwd(),
+        os.path.dirname(os.getcwd()),
+    ]
+
+    for base_path in candidates:
+        if not base_path:
+            continue
+
+        src_path = os.path.join(base_path, "src")
+        if os.path.isdir(src_path) and base_path not in sys.path:
+            sys.path.insert(0, base_path)
+
+    # Force import now so joblib/pickle can resolve src.* references.
+    import src.preprocessing  # noqa: F401
+
 
 @st.cache_resource
 def load_model():
+    ensure_src_package_available()
     return joblib.load(os.path.join(PROJECT_ROOT, "artifacts", "final_model.pkl"))
 
 
@@ -59,7 +80,7 @@ def build_feature_metadata():
 
     metadata = {}
     for col in x_train.columns:
-        if x_train[col].dtype == "object":
+        if not pd.api.types.is_numeric_dtype(x_train[col]):
             train_options = sorted(x_train[col].dropna().astype(str).unique().tolist())
             options = train_options if train_options else desc_options.get(col, [])
             default_value = options[0] if options else ""
@@ -70,9 +91,10 @@ def build_feature_metadata():
                 "default": default_value,
             }
         else:
-            col_min = float(x_train[col].min())
-            col_max = float(x_train[col].max())
-            median = float(x_train[col].median())
+            numeric_col = pd.to_numeric(x_train[col], errors="coerce")
+            col_min = float(numeric_col.min())
+            col_max = float(numeric_col.max())
+            median = float(numeric_col.median())
             metadata[col] = {
                 "type": "numeric",
                 "description": descriptions.get(col, "Sin descripción en data_description"),
