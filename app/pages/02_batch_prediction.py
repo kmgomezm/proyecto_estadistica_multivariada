@@ -2,56 +2,91 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from shared import MAX_BATCH_ROWS, coerce_and_align_features, load_model, load_training_data
+from shared import build_feature_metadata, coerce_and_align_features, load_model
 
-st.title("📤 Test del modelo por CSV")
-st.caption("Sube un archivo CSV para estimar precios de múltiples casas en lote.")
+st.title("🧪 Test del modelo (predicción individual)")
+st.caption("Esta página es solo para probar el modelo con una vivienda nueva.")
 
 model = load_model()
-expected_cols = load_training_data().columns.tolist()
+metadata = build_feature_metadata()
 
-st.markdown(f"**Máximo permitido:** `{MAX_BATCH_ROWS}` casas (filas) por archivo.")
+st.info("Todas las variables del modelo aparecen debajo. Cada una incluye su significado entre paréntesis.")
 
-with st.expander("Ver columnas esperadas por el modelo"):
-    st.write(expected_cols)
+with st.form("single_prediction_form"):
+    user_input = {}
 
-uploaded_file = st.file_uploader("Sube tu CSV", type=["csv"])
+    # =========================
+    # NUMÉRICAS
+    # =========================
+    st.subheader("Variables numéricas")
+    numeric_cols = [c for c, m in metadata.items() if m["type"] == "numeric"]
 
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.write("Vista previa del archivo cargado", df.head())
+    for col in numeric_cols:
+        m = metadata[col]
+        label = f"{col} ({m['description']})"
 
-    if len(df) > MAX_BATCH_ROWS:
-        st.error(f"El archivo tiene {len(df)} filas. El máximo permitido es {MAX_BATCH_ROWS}.")
-    else:
-        missing_cols = [c for c in expected_cols if c not in df.columns]
-        extra_cols = [c for c in df.columns if c not in expected_cols]
+        # manejar None / errores
+        min_val = float(m.get("min", 0))
+        max_val = float(m.get("max", 1e6))
+        default = float(m.get("default", min_val))
 
-        if missing_cols:
-            st.warning(
-                "Faltan columnas en el CSV. Se completarán automáticamente con valores por defecto: "
-                + ", ".join(missing_cols)
-            )
-        if extra_cols:
-            st.info("Columnas extra detectadas y descartadas: " + ", ".join(extra_cols))
-
+        # step dinámico seguro
         try:
-            aligned = coerce_and_align_features(df)
-            preds = np.expm1(model.predict(aligned))
+            step = 1.0 if float(max_val).is_integer() else 0.01
+        except:
+            step = 1.0
 
-            result_df = df.copy()
-            result_df["PredictedPrice"] = preds
+        user_input[col] = st.number_input(
+            label,
+            min_value=min_val,
+            max_value=max_val,
+            value=default,
+            step=step,
+        )
 
-            st.success("Predicción masiva completada.")
-            st.dataframe(result_df)
+    # =========================
+    # CATEGÓRICAS
+    # =========================
+    st.subheader("Variables categóricas")
+    cat_cols = [c for c, m in metadata.items() if m["type"] == "categorical"]
 
-            csv = result_df.to_csv(index=False).encode("utf-8")
-            st.download_button(
-                "Descargar resultados",
-                data=csv,
-                file_name="predicciones_lote.csv",
-                mime="text/csv",
-            )
-        except Exception as e:
-            st.error("No se pudo procesar el CSV.")
-            st.exception(e)
+    for col in cat_cols:
+        m = metadata[col]
+        label = f"{col} ({m['description']})"
+
+        options = m.get("options", [])
+        default = m.get("default", options[0] if options else None)
+
+        if default in options:
+            idx = options.index(default)
+        else:
+            idx = 0
+
+        st.caption(f"Opciones de {col}: {', '.join(options)}")
+
+        user_input[col] = st.selectbox(label, options, index=idx)
+
+    submitted = st.form_submit_button("Predecir precio")
+
+# =========================
+# PREDICCIÓN
+# =========================
+if submitted:
+    try:
+        input_df = pd.DataFrame([user_input])
+        aligned = coerce_and_align_features(input_df)
+
+        pred = model.predict(aligned)
+
+        # asegurar formato
+        pred = np.array(pred).flatten()[0]
+
+        # SOLO si usaste log en entrenamiento
+        pred = np.expm1(pred)
+
+        st.success("Predicción completada")
+        st.metric("💰 Precio estimado", f"${pred:,.0f}")
+
+    except Exception as e:
+        st.error("No se pudo generar la predicción.")
+        st.exception(e)
