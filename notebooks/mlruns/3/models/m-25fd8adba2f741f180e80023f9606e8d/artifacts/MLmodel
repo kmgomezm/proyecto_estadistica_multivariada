@@ -1,0 +1,23 @@
+artifact_path: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/mlruns/3/models/m-25fd8adba2f741f180e80023f9606e8d/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.14.0
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.11.1
+model_id: m-25fd8adba2f741f180e80023f9606e8d
+model_size_bytes: 14388
+model_uuid: m-25fd8adba2f741f180e80023f9606e8d
+prompts: null
+run_id: 7ff5b5132a0d44e29528a08e161ca05b
+utc_time_created: '2026-04-17 01:14:14.208040'

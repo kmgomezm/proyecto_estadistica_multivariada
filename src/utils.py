@@ -83,6 +83,20 @@ def load_combined_results():
     # =========================
     final_df = train_df.merge(test_df, on="model", how="inner")
 
+    # =========================
+    # NORMALIZAR MÉTRICAS
+    # =========================
+    # Priorizar métricas reales si existen
+    if "rmse_real" in final_df.columns:
+        final_df["rmse_train"] = final_df["rmse_real"]
+        final_df["mae_train"] = final_df.get("mae_real")
+        final_df["r2_train"]  = final_df.get("r2_real")
+    else:
+        # fallback viejo
+        final_df["rmse_train"] = final_df["rmse"].fillna(final_df["rmse_mean"])
+        final_df["mae_train"] = final_df["mae"].fillna(final_df["mae_mean"])
+        final_df["r2_train"]  = final_df["r2"].fillna(final_df["r2_mean"])
+
     if final_df.empty:
         raise ValueError("El merge quedó vacío → revisa nombres de modelos")
 

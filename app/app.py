@@ -302,46 +302,6 @@ with tab2:
     results_clean = results_clean.sort_values("rmse_test")
 
     # =========================
-    # MÉTRICAS MODELO FINAL (ESCALA REAL)
-    # =========================
-    @st.cache_data
-    def compute_train_real_metrics():
-        X = pd.read_csv(os.path.join(BASE_DIR, "data", "clean", "X_train.csv"))
-        y = pd.read_csv(os.path.join(BASE_DIR, "data", "clean", "y_train.csv")).values.ravel()
-
-        y_pred_log = model.predict(X)
-
-        # AJUSTA SEGÚN TU CASO
-        y_pred = np.expm1(y_pred_log)
-        y_true = np.expm1(y)
-
-        rmse = np.sqrt(mean_squared_error(y_true, y_pred))
-        mae  = mean_absolute_error(y_true, y_pred)
-        r2   = r2_score(y_true, y_pred)
-
-        return rmse, mae, r2
-
-    rmse_tr, mae_tr, r2_tr = compute_train_real_metrics()
-
-    # =========================
-    # MOSTRAR MÉTRICAS
-    # =========================
-    st.markdown("### Métricas del modelo final (escala real)")
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.metric("RMSE (USD)", f"{rmse_tr:,.0f}")
-    col2.metric("MAE (USD)",  f"{mae_tr:,.0f}")
-    col3.metric("R²",         f"{r2_tr:.3f}")
-
-    st.caption(
-        "Estas métricas corresponden al modelo final evaluado en el conjunto de entrenamiento, "
-        "transformado nuevamente a la escala original del precio."
-    )
-
-    st.markdown("---")
-
-    # =========================
     # TABLA COMPARATIVA
     # =========================
     st.markdown("### Comparación entre modelos")

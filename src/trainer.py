@@ -91,7 +91,22 @@ def train_cv(model_name, model, pipeline_builder, X, y, cv=5):
         "mae_mean": -np.mean(results["test_mae"]),
         "r2_mean": np.mean(results["test_r2"])
     }
-    
+
+    # =========================
+    # MÉTRICAS EN ESCALA REAL
+    # =========================
+    pipe.fit(X, y)
+
+    y_pred = pipe.predict(X)
+
+    real_metrics = compute_metrics(y, y_pred)
+
+    metrics.update({
+        "rmse_real": real_metrics["rmse_real"],
+        "mae_real": real_metrics["mae_real"],
+        "r2_real": real_metrics["r2_real"]
+    })
+        
     return pipe, metrics
 
 
