@@ -50,17 +50,39 @@ def compute_defaults(neighborhood):
 
     df_sub = df[df["Neighborhood"] == neighborhood]
 
-    # fallback si está vacío
+    # fallback si pocos datos
     if len(df_sub) < 10:
         df_sub = df
 
     defaults = {}
 
     for col in df.columns:
+
+        # =========================
+        # NUMÉRICAS
+        # =========================
         if df[col].dtype in ["int64", "float64"]:
-            defaults[col] = df_sub[col].median()
+            val = df_sub[col].median()
+
+            if pd.isna(val):
+                val = df[col].median()
+
+            defaults[col] = val
+
+        # =========================
+        # CATEGÓRICAS
+        # =========================
         else:
-            defaults[col] = df_sub[col].mode()[0]
+            mode_series = df_sub[col].mode()
+
+            if len(mode_series) > 0:
+                val = mode_series.iloc[0]
+            else:
+                # fallback global
+                global_mode = df[col].mode()
+                val = global_mode.iloc[0] if len(global_mode) > 0 else "NA"
+
+            defaults[col] = val
 
     return defaults
 
