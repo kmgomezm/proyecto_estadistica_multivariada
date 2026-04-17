@@ -17,18 +17,46 @@ import mlflow.sklearn
 # =========================
 # MÉTRICAS
 # =========================
-def compute_metrics(y_true, y_pred):
-    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
-    mse = mean_squared_error(y_true, y_pred)
-    mae = mean_absolute_error(y_true, y_pred)
-    r2 = r2_score(y_true, y_pred)
+def compute_metrics(y_true, y_pred, log_target=True):
     
-    return {
-        "rmse": rmse,
-        "mse": mse,
-        "mae": mae,
-        "r2": r2
+    # =========================
+    # MÉTRICAS EN LOG
+    # =========================
+    rmse_log = np.sqrt(mean_squared_error(y_true, y_pred))
+    mse_log = mean_squared_error(y_true, y_pred)
+    mae_log = mean_absolute_error(y_true, y_pred)
+    r2_log = r2_score(y_true, y_pred)
+
+    metrics = {
+        "rmse_log": rmse_log,
+        "mse_log": mse_log,
+        "mae_log": mae_log,
+        "r2_log": r2_log
     }
+
+    # =========================
+    # MÉTRICAS EN ESCALA REAL
+    # =========================
+    if log_target:
+        y_true_real = np.expm1(y_true)
+        y_pred_real = np.expm1(y_pred)
+    else:
+        y_true_real = y_true
+        y_pred_real = y_pred
+
+    rmse_real = np.sqrt(mean_squared_error(y_true_real, y_pred_real))
+    mse_real = mean_squared_error(y_true_real, y_pred_real)
+    mae_real = mean_absolute_error(y_true_real, y_pred_real)
+    r2_real = r2_score(y_true_real, y_pred_real)
+
+    metrics.update({
+        "rmse_real": rmse_real,
+        "mse_real": mse_real,
+        "mae_real": mae_real,
+        "r2_real": r2_real
+    })
+
+    return metrics
 
 
 # =========================
