@@ -23,6 +23,18 @@ def load_data():
 
 df = load_data()
 
+@st.cache_data
+def load_full_data():
+    X = pd.read_csv(os.path.join(BASE_DIR, "data", "clean", "X_train.csv"))
+    y = pd.read_csv(os.path.join(BASE_DIR, "data", "clean", "y_train.csv"))
+
+    df_full = X.copy()
+    df_full["SalePrice"] = y.values
+
+    return df_full
+
+df_full = load_full_data()
+
 # =========================
 # MODEL
 # =========================
@@ -119,7 +131,7 @@ def compute_defaults(neighborhood):
 # =========================
 st.title("🏠 Predicción de precio de vivienda")
 
-tab1, tab2 = st.tabs(["Predicción", "Métricas"])
+tab1, tab2, tab3 = st.tabs(["Predicción", "Métricas", "Análisis"])
 
 # =========================
 # TAB 1
@@ -293,3 +305,72 @@ with tab2:
 
     best = results_clean.iloc[0]
     st.success(f"Mejor modelo: {best['model']} | RMSE test: {best['rmse_test']:.2f}")
+
+
+with tab3:
+
+    st.subheader("Análisis exploratorio del dataset")
+
+    # =========================
+    # FILTRO
+    # =========================
+    neighborhoods = ["Todos"] + sorted(df_full["Neighborhood"].dropna().unique())
+
+    selected_neigh = st.selectbox(
+        "Filtrar por vecindario",
+        neighborhoods
+    )
+
+    if selected_neigh != "Todos":
+        df_plot = df_full[df_full["Neighborhood"] == selected_neigh]
+    else:
+        df_plot = df_full.copy()
+
+    # =========================
+    # KPIs
+    # =========================
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Precio promedio", f"${df_plot['SalePrice'].mean():,.0f}")
+    col2.metric("Mediana", f"${df_plot['SalePrice'].median():,.0f}")
+    col3.metric("Observaciones", len(df_plot))
+
+    # =========================
+    # DISTRIBUCIÓN
+    # =========================
+    st.subheader("Distribución del precio")
+
+    st.bar_chart(df_plot["SalePrice"].value_counts().sort_index())
+
+    # =========================
+    # PRECIO VS ÁREA
+    # =========================
+    st.subheader("Precio vs Área habitable")
+
+    scatter_df = df_plot[["GrLivArea", "SalePrice"]].dropna()
+
+    st.scatter_chart(scatter_df, x="GrLivArea", y="SalePrice")
+
+    # =========================
+    # PRECIO VS CALIDAD
+    # =========================
+    st.subheader("Precio por calidad (OverallQual)")
+
+    qual_df = df_plot.groupby("OverallQual")["SalePrice"].mean()
+
+    st.line_chart(qual_df)
+
+    # =========================
+    # PRECIO POR VECINDARIO
+    # =========================
+    if selected_neigh == "Todos":
+
+        st.subheader("Precio promedio por vecindario")
+
+        neigh_df = (
+            df_full.groupby("Neighborhood")["SalePrice"]
+            .mean()
+            .sort_values(ascending=False)
+        )
+
+        st.bar_chart(neigh_df)
