@@ -1,56 +1,68 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import sys
 import os
+import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# =========================
+# PATH FIX
+# =========================
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(BASE_DIR)
 
-from src.utils import load_model, load_columns, load_combined_results
+from src.utils import load_model, load_combined_results
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
 # =========================
-# LOAD
+# LOAD DATA
+# =========================
+@st.cache_data
+def load_data():
+    return pd.read_csv(os.path.join(BASE_DIR, "data", "clean", "X_train.csv"))
+
+df = load_data()
+
+# =========================
+# MODEL
 # =========================
 @st.cache_resource
 def get_model():
     return load_model()
 
-@st.cache_data
-def get_columns():
-    return load_columns()
-
 model = get_model()
-all_columns = get_columns()
 
 # =========================
-# VARIABLES SELECCIONADAS
+# VARIABLES (SHAP)
 # =========================
 selected_features = [
-    "GrLivArea","TotalBsmtSF","GarageArea","GarageCars","1stFlrSF",
-    "YearBuilt","YearRemodAdd","FullBath","TotRmsAbvGrd","LotArea",
-    "OverallQual","KitchenQual","ExterQual","BsmtQual",
-    "Neighborhood","HouseStyle","BldgType","GarageType","CentralAir","SaleCondition"
+    "Neighborhood","MSZoning","HouseStyle","SaleCondition","SaleType","Condition1",
+    "OverallQual","OverallCond","Functional","GarageQual","Foundation",
+    "GrLivArea","TotalBsmtSF","1stFlrSF","2ndFlrSF","GarageArea","BsmtFinSF1",
+    "YearBuilt","YearRemodAdd",
+    "Fireplaces","TotRmsAbvGrd"
 ]
 
 # =========================
-# DEFAULTS (CRÍTICO)
+# DEFAULTS POR VECINDARIO
 # =========================
-@st.cache_data
-def get_defaults():
-    df = pd.read_csv(os.path.join("data","clean","X_train.csv"))
+def compute_defaults(neighborhood):
+
+    df_sub = df[df["Neighborhood"] == neighborhood]
+
+    # fallback si está vacío
+    if len(df_sub) < 10:
+        df_sub = df
+
     defaults = {}
 
     for col in df.columns:
-        if df[col].dtype in ["int64","float64"]:
-            defaults[col] = df[col].median()
+        if df[col].dtype in ["int64", "float64"]:
+            defaults[col] = df_sub[col].median()
         else:
-            defaults[col] = df[col].mode()[0]
+            defaults[col] = df_sub[col].mode()[0]
 
     return defaults
-
-defaults = get_defaults()
 
 # =========================
 # UI
@@ -64,72 +76,116 @@ tab1, tab2 = st.tabs(["Predicción", "Métricas"])
 # =========================
 with tab1:
 
-    st.subheader("Características principales")
+    st.subheader("Características de la vivienda")
+
+    # -------------------------
+    # Neighborhood primero
+    # -------------------------
+    neighborhoods = sorted(df["Neighborhood"].dropna().unique())
+
+    selected_neigh = st.selectbox(
+        "Neighborhood",
+        neighborhoods,
+        help="Ubicación de la vivienda"
+    )
+
+    defaults = compute_defaults(selected_neigh)
 
     input_data = {}
 
+    # =========================
+    # FUNCIONES INPUT
+    # =========================
+    def num_input(col):
+        min_val = df[col].min()
+        max_val = df[col].max()
+        default = defaults[col]
+
+        return st.number_input(
+            col,
+            min_value=float(min_val),
+            max_value=float(max_val),
+            value=float(default),
+            help=f"Rango típico: {min_val:.0f} - {max_val:.0f}"
+        )
+
+    def cat_input(col):
+        options = sorted(df[col].dropna().unique())
+        default = defaults[col]
+
+        idx = options.index(default) if default in options else 0
+
+        return st.selectbox(
+            col,
+            options,
+            index=idx
+        )
+
+    # =========================
+    # INPUTS
+    # =========================
     col1, col2, col3 = st.columns(3)
 
-    def num_input(label, default, help_text):
-        return st.number_input(label, value=float(default), help=help_text)
-
-    def cat_input(label, options, default, help_text):
-        return st.selectbox(label, options, index=options.index(default) if default in options else 0, help=help_text)
-
-    # =========================
-    # NUMÉRICAS
-    # =========================
     with col1:
-        input_data["GrLivArea"] = num_input("GrLivArea", defaults["GrLivArea"], "Área habitable (sq ft)")
-        input_data["TotalBsmtSF"] = num_input("TotalBsmtSF", defaults["TotalBsmtSF"], "Área sótano")
-        input_data["GarageArea"] = num_input("GarageArea", defaults["GarageArea"], "Área garaje")
-        input_data["GarageCars"] = num_input("GarageCars", defaults["GarageCars"], "Capacidad garaje")
+        input_data["GrLivArea"] = num_input("GrLivArea")
+        input_data["TotalBsmtSF"] = num_input("TotalBsmtSF")
+        input_data["1stFlrSF"] = num_input("1stFlrSF")
+        input_data["2ndFlrSF"] = num_input("2ndFlrSF")
 
     with col2:
-        input_data["1stFlrSF"] = num_input("1stFlrSF", defaults["1stFlrSF"], "Área primer piso")
-        input_data["YearBuilt"] = num_input("YearBuilt", defaults["YearBuilt"], "Año construcción")
-        input_data["YearRemodAdd"] = num_input("YearRemodAdd", defaults["YearRemodAdd"], "Año remodelación")
+        input_data["GarageArea"] = num_input("GarageArea")
+        input_data["BsmtFinSF1"] = num_input("BsmtFinSF1")
+        input_data["YearBuilt"] = num_input("YearBuilt")
+        input_data["YearRemodAdd"] = num_input("YearRemodAdd")
 
     with col3:
-        input_data["FullBath"] = num_input("FullBath", defaults["FullBath"], "Baños completos")
-        input_data["TotRmsAbvGrd"] = num_input("TotRmsAbvGrd", defaults["TotRmsAbvGrd"], "Habitaciones")
-        input_data["LotArea"] = num_input("LotArea", defaults["LotArea"], "Área lote")
+        input_data["Fireplaces"] = num_input("Fireplaces")
+        input_data["TotRmsAbvGrd"] = num_input("TotRmsAbvGrd")
 
     # =========================
     # ORDINALES
     # =========================
-    quality_levels = ["Po","Fa","TA","Gd","Ex"]
+    input_data["OverallQual"] = st.slider(
+        "OverallQual", 1, 10, int(defaults["OverallQual"])
+    )
 
-    input_data["OverallQual"] = st.slider("OverallQual", 1, 10, int(defaults["OverallQual"]), help="Calidad general (1-10)")
-    input_data["KitchenQual"] = cat_input("KitchenQual", quality_levels, defaults["KitchenQual"], "Calidad cocina")
-    input_data["ExterQual"] = cat_input("ExterQual", quality_levels, defaults["ExterQual"], "Calidad exterior")
-    input_data["BsmtQual"] = cat_input("BsmtQual", quality_levels, defaults["BsmtQual"], "Calidad sótano")
+    input_data["OverallCond"] = st.slider(
+        "OverallCond", 1, 10, int(defaults["OverallCond"])
+    )
 
     # =========================
     # CATEGÓRICAS
     # =========================
-    df = pd.read_csv(os.path.join("data","clean","X_train.csv"))
+    for col in [
+        "MSZoning","HouseStyle","SaleCondition",
+        "SaleType","Condition1","Functional",
+        "GarageQual","Foundation"
+    ]:
+        input_data[col] = cat_input(col)
 
-    for col in ["Neighborhood","HouseStyle","BldgType","GarageType","SaleCondition"]:
-        input_data[col] = st.selectbox(
-            col,
-            sorted(df[col].dropna().unique()),
-            help=f"Categoría de {col}"
-        )
-
-    input_data["CentralAir"] = st.selectbox("CentralAir", ["Y","N"], help="Aire acondicionado")
+    input_data["Neighborhood"] = selected_neigh
 
     # =========================
-    # COMPLETAR VARIABLES
+    # COMPLETAR VECTOR
     # =========================
     final_input = defaults.copy()
     final_input.update(input_data)
 
     df_input = pd.DataFrame([final_input])
 
-    if st.button("Predecir"):
-        pred = model.predict(df_input)[0]
-        st.success(f"💰 Precio estimado: ${pred:,.0f}")
+    st.info("Las variables no visibles se completan automáticamente según el vecindario.")
+
+    # =========================
+    # PREDICCIÓN
+    # =========================
+    if st.button("Predecir precio"):
+
+        try:
+            pred = model.predict(df_input)[0]
+            st.success(f"💰 Precio estimado: ${pred:,.0f}")
+
+        except Exception as e:
+            st.error(f"Error: {e}")
 
 # =========================
 # TAB 2
@@ -139,7 +195,6 @@ with tab2:
     st.subheader("Comparación de modelos")
 
     results = load_combined_results()
-
     results = results.sort_values("rmse_test")
 
     st.dataframe(results)
