@@ -43,6 +43,34 @@ selected_features = [
     "Fireplaces","TotRmsAbvGrd"
 ]
 
+feature_descriptions = {
+    "Neighborhood": "Vecindario donde se ubica la vivienda",
+    "MSZoning": "Clasificación de zonificación (residencial, comercial, etc.)",
+    "HouseStyle": "Tipo de estructura (1 piso, 2 pisos, etc.)",
+    "SaleCondition": "Condición de la venta (normal, foreclosure, etc.)",
+    "SaleType": "Tipo de transacción (efectivo, crédito, etc.)",
+    "Condition1": "Proximidad a condiciones externas (vías, parques, etc.)",
+
+    "OverallQual": "Calidad general de materiales y acabados (1–10)",
+    "OverallCond": "Condición general de la vivienda (1–10)",
+    "Functional": "Nivel de funcionalidad de la vivienda",
+    "GarageQual": "Calidad del garaje",
+    "Foundation": "Tipo de cimentación",
+
+    "GrLivArea": "Área habitable sobre el nivel del suelo (pies cuadrados)",
+    "TotalBsmtSF": "Área total del sótano",
+    "1stFlrSF": "Área del primer piso",
+    "2ndFlrSF": "Área del segundo piso",
+    "GarageArea": "Área del garaje",
+    "BsmtFinSF1": "Área terminada del sótano",
+
+    "YearBuilt": "Año de construcción",
+    "YearRemodAdd": "Año de remodelación",
+
+    "Fireplaces": "Número de chimeneas",
+    "TotRmsAbvGrd": "Número total de habitaciones (sin incluir baños)"
+}
+
 # =========================
 # DEFAULTS POR VECINDARIO
 # =========================
@@ -123,24 +151,41 @@ with tab1:
         max_val = df[col].max()
         default = defaults[col]
 
+        desc = feature_descriptions.get(col, "")
+
+        help_text = f"""
+        {desc}
+
+        Rango típico: {min_val:.0f} - {max_val:.0f}
+        """
+
         return st.number_input(
             col,
             min_value=float(min_val),
             max_value=float(max_val),
             value=float(default),
-            help=f"Rango típico: {min_val:.0f} - {max_val:.0f}"
+            help=help_text
         )
 
     def cat_input(col):
         options = sorted(df[col].dropna().unique())
         default = defaults[col]
 
+        desc = feature_descriptions.get(col, "")
+
+        help_text = f"""
+        {desc}
+
+        Valores posibles: {', '.join(options[:5])}...
+        """
+
         idx = options.index(default) if default in options else 0
 
         return st.selectbox(
             col,
             options,
-            index=idx
+            index=idx,
+            help=help_text
         )
 
     # =========================
