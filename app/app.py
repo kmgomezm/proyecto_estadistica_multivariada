@@ -263,9 +263,30 @@ with tab2:
     st.subheader("Comparación de modelos")
 
     results = load_combined_results()
-    results = results.sort_values("rmse_test")
 
-    st.dataframe(results)
+    results = load_combined_results()
+
+    # =========================
+    # NORMALIZAR MÉTRICAS TRAIN
+    # =========================
+    results["rmse_train"] = results["rmse"].fillna(results["rmse_mean"])
+    results["mse_train"] = results["mse"].fillna(results["mse_mean"])
+    results["mae_train"] = results["mae"].fillna(results["mae_mean"])
+    results["r2_train"]  = results["r2"].fillna(results["r2_mean"])
+
+    # =========================
+    # SELECCIÓN FINAL
+    # =========================
+    results_clean = results[[
+        "model",
+        "rmse_train", "mae_train", "r2_train",
+        "rmse_test", "mae_test", "r2_test"
+    ]]
+
+    # ordenar por test
+    results_clean = results_clean.sort_values("rmse_test")
+
+    st.dataframe(results_clean)
 
     best = results.iloc[0]
     st.success(f"Mejor modelo: {best['model']} | RMSE test: {best['rmse_test']:.2f}")
