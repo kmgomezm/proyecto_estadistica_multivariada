@@ -283,8 +283,11 @@ with tab2:
         "rmse_test", "mae_test", "r2_test"
     ]]
 
+
+    results_clean = results_clean.round(3)
     # ordenar por test
     results_clean = results_clean.sort_values("rmse_test")
+    
 
     st.dataframe(results_clean)
 
