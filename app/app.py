@@ -204,7 +204,8 @@ with tab1:
 
         try:
             pred = model.predict(df_input)[0]
-            st.success(f"💰 Precio estimado: ${pred:,.0f}")
+            price = np.expm1(pred)
+            st.success(f"💰 Precio estimado: ${price:,.0f}")
 
         except Exception as e:
             st.error(f"Error: {e}")
