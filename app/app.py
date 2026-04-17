@@ -291,5 +291,5 @@ with tab2:
 
     st.dataframe(results_clean)
 
-    best = results.iloc[0]
+    best = results_clean.iloc[0]
     st.success(f"Mejor modelo: {best['model']} | RMSE test: {best['rmse_test']:.2f}")
