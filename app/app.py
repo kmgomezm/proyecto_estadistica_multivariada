@@ -273,7 +273,6 @@ with tab1:
 with tab2:
 
     import numpy as np
-    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
     st.subheader("Comparación de modelos")
 
@@ -298,7 +297,7 @@ with tab2:
         "rmse_test", "mae_test", "r2_test"
     ]].copy()
 
-    results_clean = results_clean.round(3)
+    results_clean = results_clean.round(2)
     results_clean = results_clean.sort_values("rmse_test")
 
     # =========================
