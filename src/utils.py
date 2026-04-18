@@ -67,7 +67,6 @@ def load_combined_results():
         train_dfs.append(df)
 
     train_df = pd.concat(train_dfs, ignore_index=True)
-    train_df = np.expm1(train_df)
     
 
     # =========================
