@@ -284,10 +284,9 @@ with tab2:
     # =========================
     # NORMALIZAR MÉTRICAS TRAIN (LOG SCALE)
     # =========================
-    results["rmse_train"] = results["rmse"].fillna(results["rmse_mean"])
-    results["mae_train"] = results["mae"].fillna(results["mae_mean"])
-    results["r2_train"]  = results["r2"].fillna(results["r2_mean"])
-
+    results["rmse_train"] = results.get("rmse_real", results.get("rmse_mean"))
+    results["mae_train"] = results.get("mae_real", results.get("mae_mean"))
+    results["r2_train"]  = results.get("r2_real", results.get("r2_mean"))
     # =========================
     # TABLA FINAL
     # =========================
