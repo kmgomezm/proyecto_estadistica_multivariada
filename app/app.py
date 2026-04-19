@@ -353,7 +353,23 @@ with tab3:
     # =========================
     st.subheader("Distribución del precio")
 
-    st.bar_chart(df_plot["SalePrice"].value_counts().sort_index())
+    # Crear bins más legibles
+    bins = np.linspace(df_plot["SalePrice"].min(), df_plot["SalePrice"].max(), 20)
+
+    hist_values, bin_edges = np.histogram(df_plot["SalePrice"], bins=bins)
+
+    # Crear etiquetas tipo rango
+    labels = [
+        f"${int(bin_edges[i]/1000)}k - ${int(bin_edges[i+1]/1000)}k"
+        for i in range(len(bin_edges)-1)
+    ]
+
+    hist_df = pd.DataFrame({
+        "Rango de precio": labels,
+        "Frecuencia": hist_values
+    })
+
+    st.bar_chart(hist_df.set_index("Rango de precio"))
 
     # =========================
     # PRECIO VS ÁREA
