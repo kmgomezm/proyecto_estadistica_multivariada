@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/759137604347541581/cb9c565c6e0d4da7977136b9ebfc8911/artifacts
+end_time: 1776584961059
+entry_point_name: ''
+experiment_id: '759137604347541581'
+lifecycle_stage: active
+run_id: cb9c565c6e0d4da7977136b9ebfc8911
+run_name: worried-pug-615
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776584960990
+status: 3
+tags: []
+user_id: karen

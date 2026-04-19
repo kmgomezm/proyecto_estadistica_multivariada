@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/759137604347541581/013fa5b0af6f4f7aaefda74af9a0c336/artifacts
+end_time: 1776584986242
+entry_point_name: ''
+experiment_id: '759137604347541581'
+lifecycle_stage: active
+run_id: 013fa5b0af6f4f7aaefda74af9a0c336
+run_name: adaptable-bee-493
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776584986201
+status: 3
+tags: []
+user_id: karen

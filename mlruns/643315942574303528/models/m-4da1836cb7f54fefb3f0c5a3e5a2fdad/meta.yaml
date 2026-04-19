@@ -1,0 +1,10 @@
+artifact_location: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528/models/m-4da1836cb7f54fefb3f0c5a3e5a2fdad/artifacts
+creation_timestamp: 1776585330244
+experiment_id: '643315942574303528'
+last_updated_timestamp: 1776585336212
+model_id: m-4da1836cb7f54fefb3f0c5a3e5a2fdad
+model_type: null
+name: model
+source_run_id: 03a0746a10ce4ef086080197f30cec23
+status: 2
+status_message: null

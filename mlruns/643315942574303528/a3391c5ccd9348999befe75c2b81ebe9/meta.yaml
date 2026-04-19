@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528/a3391c5ccd9348999befe75c2b81ebe9/artifacts
+end_time: 1776584905644
+entry_point_name: ''
+experiment_id: '643315942574303528'
+lifecycle_stage: active
+run_id: a3391c5ccd9348999befe75c2b81ebe9
+run_name: linear_regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776584895972
+status: 3
+tags: []
+user_id: karen

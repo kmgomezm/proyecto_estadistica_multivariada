@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/759137604347541581/89b8a9beee594de4aa36f732197912fe/artifacts
+end_time: 1776585157737
+entry_point_name: ''
+experiment_id: '759137604347541581'
+lifecycle_stage: active
+run_id: 89b8a9beee594de4aa36f732197912fe
+run_name: ridge
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776585150550
+status: 3
+tags: []
+user_id: karen

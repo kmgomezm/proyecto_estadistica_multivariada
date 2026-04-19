@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528/12f85ec9726e4f14ad24860b016ca6f1/artifacts
+end_time: 1776585301107
+entry_point_name: ''
+experiment_id: '643315942574303528'
+lifecycle_stage: active
+run_id: 12f85ec9726e4f14ad24860b016ca6f1
+run_name: random_forest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776585268457
+status: 3
+tags: []
+user_id: karen
