@@ -465,6 +465,7 @@ with tab4:
             "adjusted": "Importancia"
         })
     )
+    df_display = df_display[["Variable", "Descripción", "Importancia"]]
     df_display["Importancia"] = df_display["Importancia"].round(4)
 
     st.subheader("📋 Ranking ")
