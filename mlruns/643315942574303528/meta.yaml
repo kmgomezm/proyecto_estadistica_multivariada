@@ -1,0 +1,8 @@
+artifact_location: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528
+creation_time: 1776584422785
+experiment_id: '643315942574303528'
+last_update_time: 1776584422785
+lifecycle_stage: active
+name: house_prices_models
+trace_location: null
+workspace: default

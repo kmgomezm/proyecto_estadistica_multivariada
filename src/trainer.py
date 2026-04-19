@@ -13,6 +13,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import mlflow
 import mlflow.sklearn
 
+mlflow.set_tracking_uri("file:../mlruns")
+mlflow.set_experiment("house_prices_models")
 
 # =========================
 # MÉTRICAS
