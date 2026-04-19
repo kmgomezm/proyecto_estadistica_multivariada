@@ -312,10 +312,6 @@ with tab2:
             f"Mejor modelo: {best['model']} | RMSE test: {best['rmse_test']:.2f}"
         )
 
-    st.caption(
-        "Nota: Las métricas de entrenamiento en la tabla están en escala logarítmica "
-        "(validación cruzada), mientras que las métricas de test están en escala original."
-    )
 
 # =========================
 # TAB 3
