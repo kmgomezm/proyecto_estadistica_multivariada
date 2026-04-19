@@ -1,3 +1,4 @@
+import joblib
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -411,7 +412,7 @@ with tab3:
 
 with tab4:
 
-    st.header("📊 Variables más importantes del modelo")
+    st.header("Variables más relevantes en la decisión del modelo")
 
     st.markdown("""
     Este modelo utiliza técnicas de Machine Learning para estimar el precio de una vivienda.
