@@ -336,6 +336,9 @@ with tab3:
     else:
         df_plot = df_full.copy()
 
+    df_plot = df_plot.copy()
+    df_plot["SalePrice"] = np.expm1(df_plot["SalePrice"])
+
     # =========================
     # KPIs
     # =========================
