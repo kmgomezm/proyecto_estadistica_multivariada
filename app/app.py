@@ -432,22 +432,23 @@ with tab4:
     )
 
     # =========================
-    # GRÁFICO
-    # =========================
-    st.subheader("🔝 Top 10 variables más influyentes")
-
-    top_plot = df_importance.head(10)
-
-    st.bar_chart(
-        data=top_plot.set_index("original_feature")["adjusted"]
-    )
-
-    # =========================
     # TABLA
     # =========================
-    st.subheader("📋 Ranking completo")
+    df_display = (
+        df_importance
+        .sort_values("adjusted", ascending=False)
+        .head(20)
+        .rename(columns={
+            "original_feature": "Variable",
+            "description": "Descripción",
+            "adjusted": "Importancia"
+        })
+    )
+    df_display["Importancia"] = df_display["Importancia"].round(4)
 
-    st.dataframe(df_importance.head(30))
+    st.subheader("📋 Ranking ")
+
+    st.dataframe(df_display)
 
     # =========================
     # INSIGHTS AUTOMÁTICOS
