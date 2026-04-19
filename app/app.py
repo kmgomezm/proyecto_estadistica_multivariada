@@ -81,7 +81,13 @@ feature_descriptions = {
     "YearRemodAdd": "Año de remodelación",
 
     "Fireplaces": "Número de chimeneas",
-    "TotRmsAbvGrd": "Número total de habitaciones (sin incluir baños)"
+    "TotRmsAbvGrd": "Número total de habitaciones (sin incluir baños)",
+
+    "TotalSF": "Área total construida (suma de sótano, primer y segundo piso)",
+    "MSSubClass": "Tipo de vivienda según clasificación de construcción (código numérico)",
+    "BsmtFullBath": "Número de baños completos ubicados en el sótano",
+    "HalfBath": "Número de medios baños sobre el nivel del suelo",
+    "BsmtExposure": "Nivel de exposición del sótano (sin exposición, mínima, promedio, buena)"
 }
 
 # =========================
