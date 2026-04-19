@@ -46,14 +46,29 @@ def get_model():
 model = get_model()
 
 # =========================
-# VARIABLES (SHAP)
+# VARIABLES formulario (según SHAP)
 # =========================
 selected_features = [
+    # ubicación / contexto
     "Neighborhood","MSZoning","HouseStyle","SaleCondition","SaleType","Condition1",
+
+    # calidad / estado
     "OverallQual","OverallCond","Functional","GarageQual","Foundation",
-    "GrLivArea","TotalBsmtSF","1stFlrSF","2ndFlrSF","GarageArea","BsmtFinSF1",
+
+    # tamaño (limpio y no redundante)
+    "GrLivArea","GarageArea","BsmtFinSF1",
+
+    # baños (muy importantes y usables)
+    "FullBath","HalfBath","BsmtFullBath","BsmtExposure",
+
+    # tiempo
     "YearBuilt","YearRemodAdd",
-    "Fireplaces","TotRmsAbvGrd"
+
+    # estructura adicional
+    "Fireplaces","TotRmsAbvGrd",
+
+    # adicionales importantes del modelo
+    "MSSubClass"
 ]
 
 feature_descriptions = {
