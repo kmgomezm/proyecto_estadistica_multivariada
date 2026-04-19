@@ -131,7 +131,7 @@ def compute_defaults(neighborhood):
 # =========================
 st.title("🏠 Predicción de precio de vivienda")
 
-tab1, tab2, tab3 = st.tabs(["Predicción", "Métricas", "Análisis"])
+tab1, tab2, tab3, tab4 = st.tabs(["Predicción", "Métricas", "Análisis", "Explicabilidad"])
 
 # =========================
 # TAB 1
@@ -403,3 +403,62 @@ with tab3:
         )
 
         st.bar_chart(neigh_df)
+
+
+# =========================
+# TAB 4
+# =========================
+
+with tab4:
+
+    st.header("📊 Variables más importantes del modelo")
+
+    st.markdown("""
+    Este modelo utiliza técnicas de Machine Learning para estimar el precio de una vivienda.
+    A continuación se muestran las variables que más influyen en la predicción.
+    """)
+
+    # =========================
+    # CARGAR DATOS
+    # =========================
+    df_importance = joblib.load("artifacts/shap_global_importance.pkl")
+
+    # ordenar por importancia
+    df_importance = df_importance.sort_values("adjusted", ascending=False)
+
+    # =========================
+    # GRÁFICO
+    # =========================
+    st.subheader("🔝 Top 20 variables más influyentes")
+
+    top_plot = df_importance.head(20)
+
+    st.bar_chart(
+        data=top_plot.set_index("original_feature")["adjusted"]
+    )
+
+    # =========================
+    # TABLA
+    # =========================
+    st.subheader("📋 Ranking completo")
+
+    st.dataframe(df_importance.head(30))
+
+    # =========================
+    # INSIGHTS AUTOMÁTICOS
+    # =========================
+    st.subheader("🧠 Interpretación")
+
+    top5 = df_importance.head(5)["original_feature"].tolist()
+
+    st.markdown(f"""
+    Las variables más importantes para el modelo son:
+
+    - **{top5[0]}**
+    - **{top5[1]}**
+    - **{top5[2]}**
+    - **{top5[3]}**
+    - **{top5[4]}**
+
+    Esto significa que estos factores tienen mayor impacto en el precio estimado de una vivienda.
+    """)
