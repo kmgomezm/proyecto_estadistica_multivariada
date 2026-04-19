@@ -155,26 +155,24 @@ st.title("🏠 Predicción de precio de vivienda")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Predicción", "Métricas", "Análisis", "Explicabilidad"])
 
-# =========================
-# TAB 1
-# =========================
 with tab1:
 
-    st.subheader("Características de la vivienda")
+    st.subheader("🏠 Características de la vivienda")
 
-    # -------------------------
-    # Neighborhood primero
-    # -------------------------
+    # =========================
+    # UBICACIÓN
+    # =========================
+    st.markdown("### 📍 Ubicación")
+
     neighborhoods = sorted(df["Neighborhood"].dropna().unique())
 
     selected_neigh = st.selectbox(
         "Neighborhood",
         neighborhoods,
-        help="Ubicación de la vivienda"
+        help=feature_descriptions.get("Neighborhood", "")
     )
 
     defaults = compute_defaults(selected_neigh)
-
     input_data = {}
 
     # =========================
@@ -185,33 +183,17 @@ with tab1:
         max_val = df[col].max()
         default = defaults[col]
 
-        desc = feature_descriptions.get(col, "")
-
-        help_text = f"""
-        {desc}
-
-        Rango típico: {min_val:.0f} - {max_val:.0f}
-        """
-
         return st.number_input(
             col,
             min_value=float(min_val),
             max_value=float(max_val),
             value=float(default),
-            help=help_text
+            help=feature_descriptions.get(col, "")
         )
 
     def cat_input(col):
         options = sorted(df[col].dropna().unique())
         default = defaults[col]
-
-        desc = feature_descriptions.get(col, "")
-
-        help_text = f"""
-        {desc}
-
-        Valores posibles: {', '.join(options[:5])}...
-        """
 
         idx = options.index(default) if default in options else 0
 
@@ -219,63 +201,119 @@ with tab1:
             col,
             options,
             index=idx,
-            help=help_text
+            help=feature_descriptions.get(col, "")
         )
 
     # =========================
-    # INPUTS
+    # TIPO DE VIVIENDA
     # =========================
-    col1, col2, col3 = st.columns(3)
+    st.markdown("### 🏠 Tipo de vivienda")
+
+    for col in ["MSZoning","HouseStyle","SaleCondition","SaleType","MSSubClass"]:
+        input_data[col] = cat_input(col)
+
+    # =========================
+    # TAMAÑO
+    # =========================
+    st.markdown("### 📏 Tamaño")
+
+    col1, col2 = st.columns(2)
 
     with col1:
         input_data["GrLivArea"] = num_input("GrLivArea")
-        input_data["TotalBsmtSF"] = num_input("TotalBsmtSF")
-        input_data["1stFlrSF"] = num_input("1stFlrSF")
-        input_data["2ndFlrSF"] = num_input("2ndFlrSF")
+        input_data["GarageArea"] = num_input("GarageArea")
 
     with col2:
-        input_data["GarageArea"] = num_input("GarageArea")
         input_data["BsmtFinSF1"] = num_input("BsmtFinSF1")
-        input_data["YearBuilt"] = num_input("YearBuilt")
-        input_data["YearRemodAdd"] = num_input("YearRemodAdd")
+
+    # =========================
+    # BAÑOS
+    # =========================
+    st.markdown("### 🛁 Baños")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        input_data["FullBath"] = num_input("FullBath")
+
+    with col2:
+        input_data["HalfBath"] = num_input("HalfBath")
 
     with col3:
+        input_data["BsmtFullBath"] = num_input("BsmtFullBath")
+
+    input_data["BsmtExposure"] = cat_input("BsmtExposure")
+
+    # =========================
+    # CALIDAD Y ESTADO
+    # =========================
+    st.markdown("### 🏗️ Calidad y estado")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        input_data["OverallQual"] = st.slider(
+            "OverallQual", 1, 10, int(defaults["OverallQual"]),
+            help=feature_descriptions.get("OverallQual", "")
+        )
+
+        input_data["GarageQual"] = cat_input("GarageQual")
+
+    with col2:
+        input_data["OverallCond"] = st.slider(
+            "OverallCond", 1, 10, int(defaults["OverallCond"]),
+            help=feature_descriptions.get("OverallCond", "")
+        )
+
+        input_data["Functional"] = cat_input("Functional")
+
+    input_data["Foundation"] = cat_input("Foundation")
+
+    # =========================
+    # CONTEXTO / ENTORNO
+    # =========================
+    st.markdown("### 🌆 Entorno")
+
+    input_data["Condition1"] = cat_input("Condition1")
+
+    # =========================
+    # ANTIGÜEDAD
+    # =========================
+    st.markdown("### 📅 Antigüedad")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        input_data["YearBuilt"] = num_input("YearBuilt")
+
+    with col2:
+        input_data["YearRemodAdd"] = num_input("YearRemodAdd")
+
+    # =========================
+    # CARACTERÍSTICAS ADICIONALES
+    # =========================
+    st.markdown("### 🧱 Características adicionales")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
         input_data["Fireplaces"] = num_input("Fireplaces")
+
+    with col2:
         input_data["TotRmsAbvGrd"] = num_input("TotRmsAbvGrd")
 
     # =========================
-    # ORDINALES
+    # FINAL INPUT
     # =========================
-    input_data["OverallQual"] = st.slider(
-        "OverallQual", 1, 10, int(defaults["OverallQual"])
-    )
-
-    input_data["OverallCond"] = st.slider(
-        "OverallCond", 1, 10, int(defaults["OverallCond"])
-    )
-
-    # =========================
-    # CATEGÓRICAS
-    # =========================
-    for col in [
-        "MSZoning","HouseStyle","SaleCondition",
-        "SaleType","Condition1","Functional",
-        "GarageQual","Foundation"
-    ]:
-        input_data[col] = cat_input(col)
-
     input_data["Neighborhood"] = selected_neigh
 
-    # =========================
-    # COMPLETAR VECTOR
-    # =========================
     final_input = defaults.copy()
     final_input.update(input_data)
 
     df_input = pd.DataFrame([final_input])
 
     st.info("Las variables no visibles se completan automáticamente según el vecindario.")
-
+    
     # =========================
     # PREDICCIÓN
     # =========================
