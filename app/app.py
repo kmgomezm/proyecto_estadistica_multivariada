@@ -415,8 +415,8 @@ with tab4:
     st.header("Variables más relevantes en la decisión del modelo")
 
     st.markdown("""
-    Este modelo utiliza técnicas de Machine Learning para estimar el precio de una vivienda.
-    A continuación se muestran las variables que más influyen en la predicción.
+    A continuación se muestran las variables que más influyen en la predicción del precio de una casa. 
+    Este análisis se realiza a partir del modelo con mejores métricas en test.
     """)
 
     # =========================
@@ -427,12 +427,16 @@ with tab4:
     # ordenar por importancia
     df_importance = df_importance.sort_values("adjusted", ascending=False)
 
+    df_importance["description"] = df_importance["original_feature"].apply(
+    lambda x: feature_descriptions.get(x, "Sin descripción disponible")
+    )
+
     # =========================
     # GRÁFICO
     # =========================
-    st.subheader("🔝 Top 20 variables más influyentes")
+    st.subheader("🔝 Top 10 variables más influyentes")
 
-    top_plot = df_importance.head(20)
+    top_plot = df_importance.head(10)
 
     st.bar_chart(
         data=top_plot.set_index("original_feature")["adjusted"]
@@ -451,15 +455,16 @@ with tab4:
     st.subheader("🧠 Interpretación")
 
     top5 = df_importance.head(5)["original_feature"].tolist()
+    top5_desc = [feature_descriptions.get(f, "Sin descripción") for f in top5]
 
     st.markdown(f"""
     Las variables más importantes para el modelo son:
 
-    - **{top5[0]}**
-    - **{top5[1]}**
-    - **{top5[2]}**
-    - **{top5[3]}**
-    - **{top5[4]}**
+    - **{top5[0]}**: {top5_desc[0]}
+    - **{top5[1]}**: {top5_desc[1]}
+    - **{top5[2]}**: {top5_desc[2]}
+    - **{top5[3]}**: {top5_desc[3]}
+    - **{top5[4]}**: {top5_desc[4]}
 
     Esto significa que estos factores tienen mayor impacto en el precio estimado de una vivienda.
     """)
