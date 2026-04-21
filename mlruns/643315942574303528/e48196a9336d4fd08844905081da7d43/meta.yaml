@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528/e48196a9336d4fd08844905081da7d43/artifacts
+end_time: 1776585553807
+entry_point_name: ''
+experiment_id: '643315942574303528'
+lifecycle_stage: active
+run_id: e48196a9336d4fd08844905081da7d43
+run_name: catboost
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776585419171
+status: 3
+tags: []
+user_id: karen
