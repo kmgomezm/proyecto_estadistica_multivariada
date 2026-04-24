@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/karen/Documents/proyecto_estadistica_multivariada/notebooks/../mlruns/643315942574303528/95544d2eaaa840548d3e0862deb38410/artifacts
+end_time: 1777064740841
+entry_point_name: ''
+experiment_id: '643315942574303528'
+lifecycle_stage: active
+run_id: 95544d2eaaa840548d3e0862deb38410
+run_name: lightgbm
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777063604629
+status: 3
+tags: []
+user_id: karen
